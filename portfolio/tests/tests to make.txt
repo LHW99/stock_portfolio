@@ -1,0 +1,5 @@
+- buying stocks
+- selling stocks
+- can't buy if not enough funds
+- can't sell if not in portfolio
+- can't access portfolio if not user
