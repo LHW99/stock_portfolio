@@ -11,16 +11,17 @@ class SearchView(DetailView):
   model = Stock
   template_name = 'search.html'
 
-  def get(self, request, **args, **kwargs):
-    query = request.GET('ticker_search')
+  def get(self, request, *args, **kwargs):
+    query = request.GET['ticker_search']
     symbol = query.upper()
-f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}'
+    response = request.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote&token={CLOUD_API_KEY}')
+    data = response.json()
 
-  def get_context_data(self, *args, **kwargs):
-    context = super(SearchView, self).get_context 
-
-    if query: 
-
+    return render(request, 'search.html', {
+      'symbol': symbol,
+      'companyName': data[symbol][quote][companyName],
+      'iexRealtimePrice': data[symbol][quote][iexRealtimePrice],
+    })
 
 class PortfolioDetailView(DetailView):
   model = Portfolio

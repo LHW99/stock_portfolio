@@ -15,7 +15,7 @@
   <div>
     <div class='fixed-top front-header'>
       <h1><strong><u>Portfolio</u></strong></h1>
-      <form method='GET' action='{% url 'index' %}'>
+      <form method='GET' action='{% url 'search' %}'>
         {% csrf_token %}
         <input type='search' name='ticker_search' onfocus="this.value=''" value='Ticker'>
         <button type='submit'>Search</button>
