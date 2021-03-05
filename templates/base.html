@@ -15,9 +15,10 @@
   <div>
     <div class='fixed-top front-header'>
       <h1><strong><u>Portfolio</u></strong></h1>
+
       <form method='GET' action='{% url 'search' %}'>
         {% csrf_token %}
-        <input type='search' name='ticker_search' onfocus="this.value=''" value='Ticker'>
+        <input type='search' name='ticker_search' onfocus="this.value=''" value=''>
         <button type='submit'>Search</button>
       </form>
       <div class='front-header'>
@@ -25,7 +26,7 @@
         <a href=''>Leaderboard</a>
       </div>
     </div>
-    <div class='buffer'>
+    <div style='padding-top:125px;'>
     {% block content %}{% endblock %}
     </div>
   </div>
