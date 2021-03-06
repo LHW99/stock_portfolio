@@ -1,9 +1,9 @@
 {% extends 'base.html'%}
 
 {% block content %}
-  <form method='POST' action='{% url 'portfolio_detail' %}'>
+  <form method='POST' action='{% url 'buy' symbol %}'>
     {% csrf_token %}
-    <label for='many'>How many shares of {{ companyName }}(${{ iexRealtimePrice }}) would you like to buy?</label>
+    <label for='many'>How many shares of {{ companyName }}({{ symbol }}) at ${{ iexRealtimePrice }} would you like to buy?</label>
     <input type='number' name='many' min='1'><button type='submit'>Buy</button>
   </form>
 {% endblock %}

@@ -48,8 +48,10 @@ def buy_stocks(request, symbol):
     except:
       return render(request, 'buy_stocks.html')
   
-  #elif request.method == 'POST':
-
+  if request.method == 'POST':
+    number_shares = request.POST['many']
+    print(number_shares)
+    return render(request, 'buy_stocks.html')
 
   else: 
     return HttpResponse('buy_stocks.html')
@@ -73,7 +75,6 @@ def sell_stocks(request, symbol):
       return render(request, 'sell_stocks.html')
   
   #elif request.method == 'POST':
-
 
   else: 
     return HttpResponse('sell_stocks.html')

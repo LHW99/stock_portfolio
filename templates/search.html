@@ -5,7 +5,9 @@
 {% block content %}
   <p>
     {{ symbol }} {{ companyName }} {{ iexRealtimePrice }} 
+    {% if symbol %}
     <a href='{% url 'buy' symbol %}'>BUY</a>
     <a href='{% url 'sell' symbol %}'>SELL</a>
+    {% endif %}
   </p>
 {% endblock %}
