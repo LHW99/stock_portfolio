@@ -3,5 +3,5 @@
 {% block title %} <title>PORTFOLIO</title> {% endblock %}
 
 {% block content %}
-<p>test {{ symbol }} {{ companyName }} {{ iexRealtimePrice }} test</p>
+<p>{{ symbol }} {{ companyName }} {{ iexRealtimePrice }} <a href='{% url 'buy' symbol %}'>BUY</a></p>
 {% endblock %}

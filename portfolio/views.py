@@ -15,7 +15,7 @@ def api_call(request):
       symbol = ticker.upper()
       response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
       data = response.json()
-
+      
       return render(request, 'search.html',{
         'companyName': data[symbol]['quote']['companyName'],
         'iexRealtimePrice': data[symbol]['quote']['iexRealtimePrice'],
@@ -23,12 +23,38 @@ def api_call(request):
       })
 
     except:
-      return render(request, 'search.html')
+      return render(request, 'search.html',{
+        'iexRealtimePrice': 'Could not find ticker. Try again.'
+      })
   
   else: 
     return HttpResponse('search')
 
   return render(request, 'search.html')
+
+def buy_stocks(request, symbol):
+  if request.method == 'GET':
+    try:
+    # to get the ticker information
+      response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
+      data = response.json()
+      
+      return render(request, 'buy_stocks.html',{
+        'companyName': data[symbol]['quote']['companyName'],
+        'iexRealtimePrice': data[symbol]['quote']['iexRealtimePrice'],
+        'symbol': symbol,
+      })
+
+    except:
+      return render(request, 'buy_stocks.html')
+  
+  #elif request.method == 'POST':
+
+
+  else: 
+    return HttpResponse('buy_stocks.html')
+
+  return render(request, 'buy_stocks.html')
 
 class IndexView(TemplateView):
   template_name = 'index.html'
