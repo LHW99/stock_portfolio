@@ -1,6 +1,8 @@
 {% extends 'base.html'%}
 
 {% block content %}
+  <p>Ticker: {{ symbol }}</p>
+  <p>Price: {{ price }}</p>
   <form method='POST' action='{% url 'index' %}'>
     {% csrf_token %}
     <!-- <label for='many'>How many shares of {{ companyName }}({{ symbol }}) at ${{ iexRealtimePrice }} would you like to buy?</label>

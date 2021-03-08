@@ -9,3 +9,11 @@ class StockForm(ModelForm):
   class Meta:
     model = Stock
     fields = '__all__'
+    labels = {
+      'shares': 'Number of shares to buy'
+    }
+    widgets = {
+      'ticker': forms.HiddenInput(),
+      'company': forms.HiddenInput(),
+      'price': forms.HiddenInput(),
+    }

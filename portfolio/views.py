@@ -35,16 +35,22 @@ def api_call(request):
 def buy_stocks(request, symbol):
   if request.method == 'GET':
     try:
-      form = StockForm()
-    # to get the ticker information
+      # to get the ticker information
       response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
       data = response.json()
+      company = data[symbol]['quote']['companyName']
+      price = data[symbol]['quote']['iexClose']
+      # instantiate form prefilled
+      form = StockForm(initial={
+        'ticker': symbol, 
+        'company': company, 
+        'price': price,
+        })
       
       return render(request, 'buy_stocks.html',{
-        'companyName': data[symbol]['quote']['companyName'],
-        'iexRealtimePrice': data[symbol]['quote']['iexClose'],
+        'form': form,
         'symbol': symbol,
-        'form': form
+        'price': price
       })
 
     except:
@@ -75,8 +81,6 @@ def sell_stocks(request, symbol):
 
     except:
       return render(request, 'sell_stocks.html')
-  
-  #elif request.method == 'POST':
 
   else: 
     return HttpResponse('sell_stocks.html')
