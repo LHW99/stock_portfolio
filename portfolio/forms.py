@@ -1,4 +1,11 @@
 from django import forms 
+from portfolio.models import *
+from django.forms import ModelForm
 
 class SearchForm(forms.Form):
   search = forms.CharField(label='Ticker Search', max_length=4)
+
+class StockForm(ModelForm):
+  class Meta:
+    model = Stock
+    fields = '__all__'

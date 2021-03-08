@@ -1,5 +1,5 @@
 from portfolio.models import Stock, Portfolio
-from portfolio.forms import SearchForm
+from portfolio.forms import StockForm
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
@@ -18,7 +18,7 @@ def api_call(request):
       
       return render(request, 'search.html',{
         'companyName': data[symbol]['quote']['companyName'],
-        'iexRealtimePrice': data[symbol]['quote']['iexRealtimePrice'],
+        'iexRealtimePrice': data[symbol]['quote']['iexClose'],
         'symbol': symbol,
       })
 
@@ -35,26 +35,28 @@ def api_call(request):
 def buy_stocks(request, symbol):
   if request.method == 'GET':
     try:
+      form = StockForm()
     # to get the ticker information
       response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
       data = response.json()
       
       return render(request, 'buy_stocks.html',{
         'companyName': data[symbol]['quote']['companyName'],
-        'iexRealtimePrice': data[symbol]['quote']['iexRealtimePrice'],
+        'iexRealtimePrice': data[symbol]['quote']['iexClose'],
         'symbol': symbol,
+        'form': form
       })
 
     except:
       return render(request, 'buy_stocks.html')
-  
-  if request.method == 'POST':
-    number_shares = request.POST['many']
-    print(number_shares)
-    return render(request, 'buy_stocks.html')
 
-  else: 
-    return HttpResponse('buy_stocks.html')
+  if request.method == 'POST':
+    form = StockForm(requst.POST)
+    if form.is_valid(): 
+      number_shares = form.cleaned_data['shares']
+      print(number_shares)
+
+    return redirect('index')
 
   return render(request, 'buy_stocks.html')
 
