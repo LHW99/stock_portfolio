@@ -1,6 +1,6 @@
 from portfolio.models import Stock, Portfolio
 from portfolio.forms import StockForm
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
 from rest_framework.views import APIView
@@ -45,6 +45,7 @@ def buy_stocks(request, symbol):
         'ticker': symbol, 
         'company': company, 
         'price': price,
+        #'user': request.user
         })
       
       return render(request, 'buy_stocks.html',{
@@ -57,12 +58,14 @@ def buy_stocks(request, symbol):
       return render(request, 'buy_stocks.html')
 
   if request.method == 'POST':
-    form = StockForm(requst.POST)
+    form = StockForm(request.POST)
     if form.is_valid(): 
-      number_shares = form.cleaned_data['shares']
-      print(number_shares)
-
-    return redirect('index')
+      purchase = form.save(commit=False)
+      purchase.portfolio = 'nut'
+      purchase.save()
+      return redirect('index')
+    else:
+      return redirect('index')
 
   return render(request, 'buy_stocks.html')
 

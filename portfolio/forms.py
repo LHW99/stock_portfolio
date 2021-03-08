@@ -12,8 +12,8 @@ class StockForm(ModelForm):
     labels = {
       'shares': 'Number of shares to buy'
     }
-    widgets = {
-      'ticker': forms.HiddenInput(),
-      'company': forms.HiddenInput(),
-      'price': forms.HiddenInput(),
-    }
+    #widgets = {
+    #  'ticker': forms.HiddenInput(),
+    #  'company': forms.HiddenInput(),
+    #  'price': forms.HiddenInput(),
+    #}

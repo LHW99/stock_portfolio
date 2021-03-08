@@ -7,7 +7,7 @@ class Stock(models.Model):
   ticker = models.CharField(max_length=5)
   #portfolio = models.ForeignKey('Portfolio', on_delete=models.SET_NULL, null=True)
   company = models.CharField(max_length=100)
-  price = models.IntegerField()
+  price = models.FloatField()
   shares = models.IntegerField()
   #stock_value = price*shares
 
