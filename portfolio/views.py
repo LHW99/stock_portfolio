@@ -90,10 +90,11 @@ def sell_stocks(request, symbol):
 
   return render(request, 'sell_stocks.html')
 
-class IndexView(TemplateView):
-  template_name = 'index.html'
+def index(request):
 
-class PortfolioDetailView(DetailView):
-  model = Portfolio
-  template_name = "portfolio_detail.html"
+  return render(request, 'index.html')
+
+def portfolio(request):
+
+  return render(request, 'portfolio_detail.html')
 

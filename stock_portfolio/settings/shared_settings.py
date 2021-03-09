@@ -88,4 +88,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-print(BASE_DIR)
+LOGIN_REDIRECT_URL = '/'
