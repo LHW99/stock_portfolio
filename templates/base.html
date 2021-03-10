@@ -24,9 +24,10 @@
       <div class='front-header'>
       {% if user.is_authenticated %}
         <p>User: {{ user.get_username }}</p>
-        <a href=''>Your Portfolio</a>
+        <a href='{% url 'portfolio_detail' %}'>Your Portfolio</a>
+        <a href='{% url 'logout' %}'>Logout</a>
       {% else %}  
-        <a href=''>Log-In</a>
+        <a href='{% url 'login'%}'>Login</a>
         <a href=''>Leaderboard</a>
       {% endif %}
       </div>

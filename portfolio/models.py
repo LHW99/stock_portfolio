@@ -16,8 +16,8 @@ class Stock(models.Model):
 
 class Portfolio(models.Model):
   investor = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, unique=False)
-  portfolio_value = models.IntegerField()
-  portfolio_available_funds = models.IntegerField()
+  portfolio_value = models.FloatField()
+  portfolio_available_funds = models.FloatField()
 
   def get_absolute_url(self):
     return reverse("portfolio-detail", kwargs={"pk": self.pk})

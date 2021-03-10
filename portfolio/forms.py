@@ -17,3 +17,13 @@ class StockForm(ModelForm):
     #  'company': forms.HiddenInput(),
     #  'price': forms.HiddenInput(),
     #}
+
+class PortfolioForm(ModelForm):
+  class Meta:
+    model = Portfolio
+    fields = '__all__'
+    #widgets = {
+    #  'investor': forms.HiddenInput(),
+    #  'portfolio_value': forms.HiddenInput(),
+    #  'portfolio_available_funds': forms.HiddenInput(),
+    #}

@@ -1,5 +1,5 @@
 from portfolio.models import Stock, Portfolio
-from portfolio.forms import StockForm
+from portfolio.forms import StockForm, PortfolioForm
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
@@ -96,5 +96,20 @@ def index(request):
 
 def portfolio(request):
 
-  return render(request, 'portfolio_detail.html')
+  if request.method == 'POST':
+    form = PortfolioForm(request.POST)
+    #if form.is_valid(): 
+    #  purchase = form.save(commit=False)
+    #  purchase.portfolio = 'nut'
+    #  purchase.save()
+    #  return redirect('index')
+    #else:
+    #  return redirect('index')
+    print(request.user)
+
+  else:
+    form = PortfolioForm()
+    return render(request, 'portfolio_detail.html', {'form': form})
+
+  return render(request, 'portfolio_detail.html', {'form': form})
 

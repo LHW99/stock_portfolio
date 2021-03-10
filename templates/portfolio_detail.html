@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p>portfolio placeholder</p>
+<h3>{{user}}'s Portfolio</h3>
+{% if user.portfolio %}
+  <p>test1</p>
+{% else %}
+  <p>You don't have a portfolio!</p>
+  <form method='POST' action=''>
+  {% csrf_token %}
+    {{ form }}
+    <button type='submit'>Create</button>
+  </form>
+{% endif %}
 {% endblock %}
