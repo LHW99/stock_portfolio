@@ -98,18 +98,24 @@ def portfolio(request):
 
   if request.method == 'POST':
     form = PortfolioForm(request.POST)
-    #if form.is_valid(): 
+    if form.is_valid(): 
     #  purchase = form.save(commit=False)
     #  purchase.portfolio = 'nut'
     #  purchase.save()
     #  return redirect('index')
     #else:
     #  return redirect('index')
-    print(request.user)
+      print('yes')
+    else:
+      print('no')
 
   else:
-    form = PortfolioForm()
+    user = request.user
+    form = PortfolioForm(initial={
+      'investor': user,
+      'portfolio_value': 1000000,
+      'portfolio_available_funds': 1000000,})
     return render(request, 'portfolio_detail.html', {'form': form})
 
-  return render(request, 'portfolio_detail.html', {'form': form})
+  return render(request, 'portfolio_detail.html')
 
