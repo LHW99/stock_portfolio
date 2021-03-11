@@ -5,6 +5,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
 from rest_framework.views import APIView
 from stock_portfolio.settings.private_settings import CLOUD_API_KEY
+from django.contrib.auth.models import User
 import requests
 
 def api_call(request):
@@ -34,35 +35,31 @@ def api_call(request):
 
 def buy_stocks(request, symbol):
   if request.method == 'GET':
-    try:
-      # to get the ticker information
-      response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
-      data = response.json()
-      company = data[symbol]['quote']['companyName']
-      price = data[symbol]['quote']['iexClose']
-      # instantiate form prefilled
-      form = StockForm(initial={
-        'ticker': symbol, 
-        'company': company, 
-        'price': price,
-        'portfolio': user.Portfolio,
-        })
-      print(symbol)
-      print(price)
-      return render(request, 'buy_stocks.html',{
-        'form': form,
-        'symbol': symbol,
-        'price': price
+    # to get the ticker information
+    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
+    data = response.json()
+    company = data[symbol]['quote']['companyName']
+    price = data[symbol]['quote']['iexClose']
+    investor = request.user
+    # instantiate form prefilled
+    form = StockForm(initial={
+      'ticker': symbol, 
+      'company': company, 
+      'price': price,
+      'portfolio': investor.portfolio,
       })
-
-    except:
-      return render(request, 'buy_stocks.html')
+    return render(request, 'buy_stocks.html',{
+      'form': form,
+      'symbol': symbol,
+      'price': price
+    })
 
   if request.method == 'POST':
     form = StockForm(request.POST)
     if form.is_valid(): 
       purchase = form.save(commit=False)
-      purchase.portfolio = 'nut'
+      # if not enough funds, error message
+      # if enough funds, save
       purchase.save()
       return redirect('index')
     else:
@@ -96,7 +93,6 @@ def index(request):
   return render(request, 'index.html')
 
 def portfolio(request):
-
   if request.method == 'POST':
     form = PortfolioForm(request.POST)
     if form.is_valid(): 
