@@ -47,6 +47,7 @@ def buy_stocks(request, symbol):
       'company': company, 
       'price': price,
       'portfolio': investor.portfolio,
+      'stock_value': 0,
       })
     return render(request, 'buy_stocks.html',{
       'form': form,
@@ -58,6 +59,10 @@ def buy_stocks(request, symbol):
     form = StockForm(request.POST)
     if form.is_valid(): 
       purchase = form.save(commit=False)
+      shares = request.POST.get('shares')
+      price = request.POST.get('price')
+      value = float(shares)*float(price)
+      purchase.stock_value = value
       # if not enough funds, error message
       # if enough funds, save
       purchase.save()

@@ -3,9 +3,29 @@
 {% block content %}
 <h3>{{user}}'s Portfolio</h3>
 {% if user.portfolio %}
-  {% for stock in portfolio %}
-    {{ stock }}
-  {% endfor %}
+  {% if user.portfolio.stock_set.all %}
+    <table>
+      <tr>
+        <td>Company</td>
+        <td>Ticker</td>
+        <td>Shares</td>
+        <td>Average Price</td>
+        <td>Total Value</td>
+      </tr>
+      {% for stock in user.portfolio.stock_set.all %}
+        <tr>
+          <td>{{ stock.company }}</td>
+          <td>{{ stock }}</td>
+          <td>{{ stock.shares }}</td>
+          <td>{{ stock.price|floatformat:2 }}</td>
+          <td>{{ stock.stock_value|floatformat:2 }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>You don't have any stocks!</p>
+  {% endif %}
+  <p>Available funds: ${{ user.portfolio.portfolio_available_funds }}
 {% else %}
   <p>You don't have a portfolio!</p>
   <form method='POST' action=''>
