@@ -45,9 +45,10 @@ def buy_stocks(request, symbol):
         'ticker': symbol, 
         'company': company, 
         'price': price,
-        #'user': request.user
+        'portfolio': user.Portfolio,
         })
-      
+      print(symbol)
+      print(price)
       return render(request, 'buy_stocks.html',{
         'form': form,
         'symbol': symbol,
@@ -99,21 +100,18 @@ def portfolio(request):
   if request.method == 'POST':
     form = PortfolioForm(request.POST)
     if form.is_valid(): 
-    #  purchase = form.save(commit=False)
-    #  purchase.portfolio = 'nut'
-    #  purchase.save()
-    #  return redirect('index')
-    #else:
-    #  return redirect('index')
+      create = form.save()
+      create.save()
+      return redirect('portfolio_detail')
       print('yes')
     else:
+      return redirect('portfolio_detail')
       print('no')
 
   else:
     user = request.user
     form = PortfolioForm(initial={
       'investor': user,
-      'portfolio_value': 1000000,
       'portfolio_available_funds': 1000000,})
     return render(request, 'portfolio_detail.html', {'form': form})
 

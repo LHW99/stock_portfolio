@@ -3,7 +3,9 @@
 {% block content %}
 <h3>{{user}}'s Portfolio</h3>
 {% if user.portfolio %}
-  <p>test1</p>
+  {% for stock in portfolio %}
+    {{ stock }}
+  {% endfor %}
 {% else %}
   <p>You don't have a portfolio!</p>
   <form method='POST' action=''>

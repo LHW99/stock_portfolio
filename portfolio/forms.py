@@ -24,6 +24,5 @@ class PortfolioForm(ModelForm):
     fields = '__all__'
     widgets = {
       'investor': forms.HiddenInput(),
-      'portfolio_value': forms.HiddenInput(),
       'portfolio_available_funds': forms.HiddenInput(),
     }
