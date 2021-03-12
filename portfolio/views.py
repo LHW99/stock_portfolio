@@ -47,7 +47,7 @@ def buy_stocks(request, symbol):
       'company': company, 
       'price': price,
       'portfolio': investor.portfolio,
-      'stock_value': 0,
+      'stock_cost': 0,
       })
     return render(request, 'buy_stocks.html',{
       'form': form,
@@ -57,16 +57,32 @@ def buy_stocks(request, symbol):
 
   if request.method == 'POST':
     form = StockForm(request.POST)
+    investor = request.user
     if form.is_valid(): 
       purchase = form.save(commit=False)
-      shares = request.POST.get('shares')
-      price = request.POST.get('price')
-      value = float(shares)*float(price)
-      purchase.stock_value = value
+      pshares = request.POST.get('shares')
+      pprice = request.POST.get('price')
+      pcost = float(pshares)*float(pprice)
+      #purchase.stock_cost = pcost
+
+      existing = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
+      print(existing.shares)
+      existing_stock = StockForm(instance=existing).save(commit=False)
+      new_shares = float(existing.shares) + float(pshares)
+      existing_stock.shares = new_shares
+
+      print(pshares)
+      print(new_shares)
+      #existing = investor.portfolio.stock_set.all().filter(ticker=symbol)
+      #if existing.exists():
+      #  print('yes')
+      #else:
+      #  print('no')
       # if not enough funds, error message
       # if enough funds, save
-      purchase.save()
-      return redirect('index')
+      #purchase.save()
+      existing_stock.save()
+      return redirect('portfolio_detail')
     else:
       return redirect('index')
 

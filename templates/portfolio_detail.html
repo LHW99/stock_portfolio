@@ -10,7 +10,8 @@
         <td>Ticker</td>
         <td>Shares</td>
         <td>Average Price</td>
-        <td>Total Value</td>
+        <td>Total Cost</td>
+        <td>Current Value</td>
       </tr>
       {% for stock in user.portfolio.stock_set.all %}
         <tr>
@@ -18,7 +19,7 @@
           <td>{{ stock }}</td>
           <td>{{ stock.shares }}</td>
           <td>{{ stock.price|floatformat:2 }}</td>
-          <td>{{ stock.stock_value|floatformat:2 }}</td>
+          <td>{{ stock.stock_cost|floatformat:2 }}</td>
         </tr>
       {% endfor %}
     </table>

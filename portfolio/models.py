@@ -9,7 +9,7 @@ class Stock(models.Model):
   company = models.CharField(max_length=100)
   price = models.FloatField()
   shares = models.IntegerField()
-  stock_value = models.FloatField()
+  stock_cost = models.FloatField()
 
   def __str__(self):
     return self.ticker
