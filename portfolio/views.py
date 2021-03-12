@@ -59,29 +59,31 @@ def buy_stocks(request, symbol):
     form = StockForm(request.POST)
     investor = request.user
     if form.is_valid(): 
+      # data for the form
       purchase = form.save(commit=False)
       pshares = request.POST.get('shares')
       pprice = request.POST.get('price')
       pcost = float(pshares)*float(pprice)
-      #purchase.stock_cost = pcost
 
-      existing = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
-      print(existing.shares)
-      existing_stock = StockForm(instance=existing).save(commit=False)
-      new_shares = float(existing.shares) + float(pshares)
-      existing_stock.shares = new_shares
-
-      print(pshares)
-      print(new_shares)
-      #existing = investor.portfolio.stock_set.all().filter(ticker=symbol)
-      #if existing.exists():
-      #  print('yes')
-      #else:
-      #  print('no')
+      #data for existing shares if they exist
+      try:
+        existing = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
+        existing_stock = StockForm(instance=existing).save(commit=False)
+        new_shares = float(existing.shares) + float(pshares)
+        existing_cost = float(existing.shares)*float(existing.price)
+        new_cost = pcost + existing_cost
+        new_average = new_cost/new_shares
+        existing_stock.shares = new_shares
+        existing_stock.price = new_average
+        existing_stock.stock_cost = new_cost
+        existing_stock.save()
+      
+      except:
+        purchase = form.save(commit=False)
+        purchase.stock_cost = pcost
+        purchase.save()
       # if not enough funds, error message
       # if enough funds, save
-      #purchase.save()
-      existing_stock.save()
       return redirect('portfolio_detail')
     else:
       return redirect('index')
