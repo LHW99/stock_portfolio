@@ -8,4 +8,5 @@ urlpatterns = [
   path('search', views.api_call, name='search'),
   path('buy/<str:symbol>', views.buy_stocks, name='buy'),
   path('sell/<str:symbol>', views.sell_stocks, name='sell'),
+  path('buy_error', views.buy_error, name='buy_error'),
 ]

@@ -65,28 +65,40 @@ def buy_stocks(request, symbol):
       pprice = request.POST.get('price')
       pcost = float(pshares)*float(pprice)
 
-      #data for existing shares if they exist
-      try:
-        existing = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
-        existing_stock = StockForm(instance=existing).save(commit=False)
-        new_shares = float(existing.shares) + float(pshares)
-        existing_cost = float(existing.shares)*float(existing.price)
-        new_cost = pcost + existing_cost
-        new_average = new_cost/new_shares
-        existing_stock.shares = new_shares
-        existing_stock.price = new_average
-        existing_stock.stock_cost = new_cost
-        existing_stock.save()
-      
-      except:
-        purchase = form.save(commit=False)
-        purchase.stock_cost = pcost
-        purchase.save()
-      # if not enough funds, error message
-      # if enough funds, save
-      return redirect('portfolio_detail')
+      # if not enough funds
+      if pcost>investor.portfolio.portfolio_available_funds:
+        return redirect('buy_error')
+
+      else:
+        #data for existing shares if they exist
+        try:
+          existing = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
+          existing_stock = StockForm(instance=existing).save(commit=False)
+          new_shares = float(existing.shares) + float(pshares)
+          existing_cost = float(existing.shares)*float(existing.price)
+          new_cost = pcost + existing_cost
+          new_average = new_cost/new_shares
+          existing_stock.shares = new_shares
+          existing_stock.price = new_average
+          existing_stock.stock_cost = new_cost
+          existing_stock.save()
+
+        #if new ticker in portfolio
+        except:
+          purchase = form.save(commit=False)
+          purchase.stock_cost = pcost
+          purchase.save()
+
+        # update portfolio funds
+        my_portfolio = PortfolioForm(instance=investor.portfolio).save(commit=False)
+        new_funds = float(investor.portfolio.portfolio_available_funds) - pcost
+        my_portfolio.portfolio_available_funds = new_funds
+        my_portfolio.save()
+
+        return redirect('portfolio_detail')
+
     else:
-      return redirect('index')
+      return redirect('portfolio_detail')
 
   return render(request, 'buy_stocks.html')
 
@@ -136,3 +148,5 @@ def portfolio(request):
 
   return render(request, 'portfolio_detail.html')
 
+def buy_error(request):
+  return render(request, 'buy_error.html')
