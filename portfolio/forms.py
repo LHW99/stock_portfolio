@@ -18,6 +18,19 @@ class StockForm(ModelForm):
     #  'price': forms.HiddenInput(),
     #}
 
+class StockSellForm(ModelForm):
+  class Meta:
+    model = Stock
+    fields = '__all__'
+    labels = {
+      'shares': 'Number of shares to sell'
+    }
+    #widgets = {
+    #  'ticker': forms.HiddenInput(),
+    #  'company': forms.HiddenInput(),
+    #  'price': forms.HiddenInput(),
+    #}
+
 class PortfolioForm(ModelForm):
   class Meta:
     model = Portfolio

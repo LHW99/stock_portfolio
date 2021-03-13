@@ -7,8 +7,7 @@
     <p>Your Shares: {{ current_shares }}</p>
     <form method='POST' action=''>
       {% csrf_token %}
-      <label for='many'>How many shares of {{ company }} (${{ price }}) would you like to sell?</label>
-      <input type='number' name='many' min='1'>
+      {{ form }}
       <button type='submit'>Sell</button>
     </form>
   {% else %}

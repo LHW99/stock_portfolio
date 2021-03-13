@@ -1,5 +1,5 @@
 from portfolio.models import Stock, Portfolio
-from portfolio.forms import StockForm, PortfolioForm
+from portfolio.forms import StockForm, PortfolioForm, StockSellForm
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, ListView
@@ -116,16 +116,27 @@ def sell_stocks(request, symbol):
       curr = current_shares.shares
     except:
       curr = 0
+    #selling form
+    form = StockSellForm(initial={
+      'ticker': symbol, 
+      'company': company, 
+      'price': price,
+      'portfolio': investor.portfolio,
+      'stock_cost': 0,
+      })
 
     return render(request, 'sell_stocks.html',{
       'company': company,
       'price': price,
       'symbol': symbol,
       'current_shares': curr,
+      'form': form,
     })
 
   else: 
-    return HttpResponse('sell_stocks.html')
+    form = StockSellForm(request.POST)
+    investor = request.user
+    return redirect('portfolio_detail')
 
   return render(request, 'sell_stocks.html')
 
