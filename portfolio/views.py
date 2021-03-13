@@ -156,20 +156,30 @@ def portfolio(request):
     batch_symbols = []
     batch_shares = []
     current_share_prices = []
-    for stock in user.portfolio.stock_set.all():
-      batch_symbols.append(stock.ticker)
-      batch_shares.append(float(stock.shares))
-    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={batch_symbols}&types=quote&token={CLOUD_API_KEY}')
-    data = response.json()
-    for tick in data:
-      current_share_prices.append(float(data[tick]['quote']['iexRealtimePrice']))
-    current_values = np.multiply(current_share_prices,batch_shares)
-    portfolio_value = sum(current_values) + user.portfolio.portfolio_available_funds
+    if user.portfolio.stock_set.all():
+      for stock in user.portfolio.stock_set.all():
+        batch_symbols.append(stock.ticker)
+        batch_shares.append(float(stock.shares))
+      response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={batch_symbols}&types=quote&token={CLOUD_API_KEY}')
+      data = response.json()
+      for tick in data:
+        current_share_prices.append(float(data[tick]['quote']['iexRealtimePrice']))
+      current_values = np.multiply(current_share_prices,batch_shares)
+      portfolio_value = sum(current_values) + user.portfolio.portfolio_available_funds
+    
+      return render(request, 'portfolio_detail.html', {
+        'form': form, 
+        'current_values': current_values,
+        'portfolio_value': portfolio_value,
+        })
 
-    return render(request, 'portfolio_detail.html', {
-      'form': form, 
-      'current_values': current_values,
-      'portfolio_value': portfolio_value})
+    else:
+      portfolio_value=user.portfolio.portfolio_available_funds
+
+      return render(request, 'portfolio_detail.html', {
+        'form': form, 
+        'portfolio_value': portfolio_value
+        })
 
   return render(request, 'portfolio_detail.html')
 
