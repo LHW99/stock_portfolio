@@ -136,6 +136,50 @@ def sell_stocks(request, symbol):
   else: 
     form = StockSellForm(request.POST)
     investor = request.user
+    if form.is_valid(): 
+      # data for the form
+      sold = form.save(commit=False)
+      sshares = request.POST.get('shares')
+      sprice = request.POST.get('price')
+      scost = float(sshares)*float(sprice)
+
+      # if trying to sell negative shares or more shares than held
+      if float(sshares)<0:
+        return redirect('sell_error')
+
+      else:
+        #data for existing shares
+        existing = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
+        existing_stock = StockSellForm(instance=existing).save(commit=False)
+        new_shares = float(existing.shares) - float(sshares)
+        if new_shares < 0:
+          return redirect('sell_error')
+
+        else:
+          existing_cost = existing.stock_cost
+          new_cost = existing_cost - scost
+          existing_stock.shares = new_shares
+          existing_stock.stock_cost = new_cost
+          existing_stock.save()
+
+          # update portfolio funds
+          my_portfolio = PortfolioForm(instance=investor.portfolio).save(commit=False)
+          new_funds = float(investor.portfolio.portfolio_available_funds) + scost
+          my_portfolio.portfolio_available_funds = new_funds
+          my_portfolio.save()
+
+          if new_shares==0:
+            existing.delete()
+            return redirect('portfolio_detail')
+          
+          else:
+            return redirect('portfolio_detail')
+
+        return redirect('portfolio_detail')
+
+    else:
+      return redirect('portfolio_detail')
+
     return redirect('portfolio_detail')
 
   return render(request, 'sell_stocks.html')
