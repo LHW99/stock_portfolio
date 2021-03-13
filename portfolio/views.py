@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from stock_portfolio.settings.private_settings import CLOUD_API_KEY
 from django.contrib.auth.models import User
 import requests
+import numpy as np
 
 def api_call(request):
   if request.method == 'GET':
@@ -14,7 +15,7 @@ def api_call(request):
     # to get the ticker information
       ticker = request.GET['ticker_search']
       symbol = ticker.upper()
-      response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
+      response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote&token={CLOUD_API_KEY}')
       data = response.json()
       
       return render(request, 'search.html',{
@@ -36,7 +37,7 @@ def api_call(request):
 def buy_stocks(request, symbol):
   if request.method == 'GET':
     # to get the ticker information
-    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
+    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote&token={CLOUD_API_KEY}')
     data = response.json()
     company = data[symbol]['quote']['companyName']
     price = data[symbol]['quote']['iexClose']
@@ -105,7 +106,7 @@ def buy_stocks(request, symbol):
 def sell_stocks(request, symbol):
   if request.method == 'GET':
     # to get the ticker information
-    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
+    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote&token={CLOUD_API_KEY}')
     data = response.json()
     company = data[symbol]['quote']['companyName']
     price = data[symbol]['quote']['iexRealtimePrice']
@@ -145,11 +146,30 @@ def portfolio(request):
       print('no')
 
   else:
+    # for the create new portfolio button
     user = request.user
     form = PortfolioForm(initial={
       'investor': user,
       'portfolio_available_funds': 1000000,})
-    return render(request, 'portfolio_detail.html', {'form': form})
+    
+    # for the current value
+    batch_symbols = []
+    batch_shares = []
+    current_share_prices = []
+    for stock in user.portfolio.stock_set.all():
+      batch_symbols.append(stock.ticker)
+      batch_shares.append(float(stock.shares))
+    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={batch_symbols}&types=quote&token={CLOUD_API_KEY}')
+    data = response.json()
+    for tick in data:
+      current_share_prices.append(float(data[tick]['quote']['iexRealtimePrice']))
+    current_values = np.multiply(current_share_prices,batch_shares)
+    portfolio_value = sum(current_values) + user.portfolio.portfolio_available_funds
+
+    return render(request, 'portfolio_detail.html', {
+      'form': form, 
+      'current_values': current_values,
+      'portfolio_value': portfolio_value})
 
   return render(request, 'portfolio_detail.html')
 
