@@ -1,9 +1,17 @@
 {% extends 'base.html'%}
 
 {% block content %}
-  <form method='POST' action='{% url 'portfolio_detail' %}'>
-    {% csrf_token %}
-    <label for='many'>How many shares of {{ companyName }}(${{ iexRealtimePrice }}) would you like to sell?</label>
-    <input type='number' name='many' min='1'><button type='submit'>Sell</button>
-  </form>
+  {% if current_shares > 0 %}
+    <p>Ticker: {{ symbol }}</p>
+    <p>Price: {{ price }}</p>
+    <p>Your Shares: {{ current_shares }}</p>
+    <form method='POST' action=''>
+      {% csrf_token %}
+      <label for='many'>How many shares of {{ company }} (${{ price }}) would you like to sell?</label>
+      <input type='number' name='many' min='1'>
+      <button type='submit'>Sell</button>
+    </form>
+  {% else %}
+    <p>You have no shares of this stock to sell!</p>
+  {% endif %}
 {% endblock %}

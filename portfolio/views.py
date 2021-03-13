@@ -104,19 +104,24 @@ def buy_stocks(request, symbol):
 
 def sell_stocks(request, symbol):
   if request.method == 'GET':
-    try:
     # to get the ticker information
-      response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
-      data = response.json()
-      
-      return render(request, 'sell_stocks.html',{
-        'companyName': data[symbol]['quote']['companyName'],
-        'iexRealtimePrice': data[symbol]['quote']['iexRealtimePrice'],
-        'symbol': symbol,
-      })
-
+    response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote,stats,advanced-stats&token={CLOUD_API_KEY}')
+    data = response.json()
+    company = data[symbol]['quote']['companyName']
+    price = data[symbol]['quote']['iexRealtimePrice']
+    investor = request.user
+    try:
+      current_shares = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
+      curr = current_shares.shares
     except:
-      return render(request, 'sell_stocks.html')
+      curr = 0
+
+    return render(request, 'sell_stocks.html',{
+      'company': company,
+      'price': price,
+      'symbol': symbol,
+      'current_shares': curr,
+    })
 
   else: 
     return HttpResponse('sell_stocks.html')
