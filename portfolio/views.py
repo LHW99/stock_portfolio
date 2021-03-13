@@ -185,3 +185,6 @@ def portfolio(request):
 
 def buy_error(request):
   return render(request, 'buy_error.html')
+
+def sell_error(request):
+  return render(request, 'sell_error.html')
