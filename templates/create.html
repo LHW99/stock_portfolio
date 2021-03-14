@@ -1,12 +1,12 @@
 {% extends 'base.html'%}
 
 {% block content %}
-  <h3>Buy</h3>
+  <h3>Create a New Account</h3>
   <p>Ticker: {{ symbol }}</p>
   <p>Price: {{ price }}</p>
   <form method='POST' action=''>
     {% csrf_token %}
-    {{ form }}
+    {{ form.as_p }}
     <button type='submit'>Buy</button>
   </form>
 {% endblock %}

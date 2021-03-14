@@ -1,6 +1,7 @@
 from django import forms 
 from portfolio.models import *
 from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
 
 class SearchForm(forms.Form):
   search = forms.CharField(label='Ticker Search', max_length=4)
@@ -43,3 +44,17 @@ class PortfolioForm(ModelForm):
       'investor': forms.HiddenInput(),
       'portfolio_available_funds': forms.HiddenInput(),
     }
+
+class CustomUserCreation(UserCreationForm):
+  class Meta:
+    model = User
+    fields = (
+      'username', 
+      'password1', 
+      'password2', 
+    )
+  
+  def __init__(self, *args, **kwargs):
+    super(CustomUserCreation, self).__init__(*args, **kwargs)
+    for field_name in ('username', 'password1', 'password2'):
+      self.fields[field_name].help_text = ''

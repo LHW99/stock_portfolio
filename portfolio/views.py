@@ -1,9 +1,9 @@
 from portfolio.models import Stock, Portfolio
-from portfolio.forms import StockForm, PortfolioForm, StockSellForm
+from portfolio.forms import StockForm, PortfolioForm, StockSellForm, CustomUserCreation
 from django.shortcuts import render, redirect
 from stock_portfolio.settings.private_settings import CLOUD_API_KEY
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login, authenticate
 from django.core.paginator import Paginator
 import requests
 import numpy as np
@@ -67,6 +67,9 @@ def buy_stocks(request, symbol):
 
       # if not enough funds
       if pcost>investor.portfolio.portfolio_available_funds:
+        return redirect('buy_error')
+
+      elif float(pshares)<1:
         return redirect('buy_error')
 
       else:
@@ -209,30 +212,34 @@ def portfolio(request):
     batch_symbols = []
     batch_shares = []
     current_share_prices = []
-    if user.portfolio.stock_set.all():
-      for stock in user.portfolio.stock_set.all():
-        batch_symbols.append(stock.ticker)
-        batch_shares.append(float(stock.shares))
-      response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={batch_symbols}&types=quote&token={CLOUD_API_KEY}')
-      data = response.json()
-      for tick in data:
-        current_share_prices.append(float(data[tick]['quote']['iexClose']))
-      current_values = np.multiply(current_share_prices,batch_shares)
-      portfolio_value = sum(current_values) + user.portfolio.portfolio_available_funds
-    
-      return render(request, 'portfolio_detail.html', {
-        'form': form, 
-        'current_values': current_values,
-        'portfolio_value': portfolio_value,
-        })
+    try:
+      if user.portfolio.stock_set.all():
+        for stock in user.portfolio.stock_set.all():
+          batch_symbols.append(stock.ticker)
+          batch_shares.append(float(stock.shares))
+        response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={batch_symbols}&types=quote&token={CLOUD_API_KEY}')
+        data = response.json()
+        for tick in data:
+          current_share_prices.append(float(data[tick]['quote']['iexClose']))
+        current_values = np.multiply(current_share_prices,batch_shares)
+        portfolio_value = sum(current_values) + user.portfolio.portfolio_available_funds
+      
+        return render(request, 'portfolio_detail.html', {
+          'form': form, 
+          'current_values': current_values,
+          'portfolio_value': portfolio_value,
+          })
 
-    else:
-      portfolio_value=user.portfolio.portfolio_available_funds
+      else:
+        portfolio_value=user.portfolio.portfolio_available_funds
 
-      return render(request, 'portfolio_detail.html', {
-        'form': form, 
-        'portfolio_value': portfolio_value
-        })
+        return render(request, 'portfolio_detail.html', {
+          'form': form, 
+          'portfolio_value': portfolio_value
+          })
+          
+    except: 
+      return render(request, 'portfolio_detail.html', {'form': form})
 
   return render(request, 'portfolio_detail.html')
 
@@ -281,3 +288,18 @@ def leaderboard(request):
     return render(request, 'leaderboard.html', {'users_list': users_list, 'page_obj': page_obj})
 
   return render(request, 'leaderboard.html', {'page_obj': page_obj})
+
+def signup(request):
+  if request.method=='POST':
+    form = CustomUserCreation(request.POST)
+    if form.is_valid():
+      form.save()
+      username = request.POST.get('username')
+      raw_password = request.POST.get('password1')
+      user = authenticate(username=username, password=raw_password)
+      login(request, user)
+      return redirect('index')
+  else:
+    form = CustomUserCreation()
+
+  return render(request, 'signup.html', {'form':form})

@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Login</h1>
+  <h3>Login</h3>
   {% if form.errors %}
-    <p> Your username and password didn't match</p>
+    <p>Your username and password didn't match</p>
   {% endif %}
 
   {% if next %}
@@ -13,10 +13,10 @@
       <p>Please login to see this page.</p>
     {% endif %}
   {% endif %}
-
+  <div style='justify-content:center'>
   <form method='post' action='{% url 'login' %}'>
     {% csrf_token %}
-    <table>
+    <table style='text-align:center; display:inline-block'>
       <tr>
         <td>{{ form.username.label_tag }}</td>
         <td>{{ form.username }}</td>
@@ -25,11 +25,12 @@
         <td>{{ form.password.label_tag }}</td>
         <td>{{ form.password }}</td>
       </tr>
-    </table>
+    </table><br>
     <input type='submit' value='Login' />
     <input type='hidden' name='next' value='{{ next }}' />
   </form>
+  </div>
 
-  <p><a href='{% url 'password_reset' %}'>Lost your password?</a></p>
+  <a href={% url 'signup' %}>Create new account?</a>
 
 {% endblock %}
