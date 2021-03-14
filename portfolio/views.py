@@ -1,13 +1,10 @@
 from portfolio.models import Stock, Portfolio
 from portfolio.forms import StockForm, PortfolioForm, StockSellForm
 from django.shortcuts import render, redirect
-from django.views.generic.base import TemplateView
-from django.views.generic import DetailView, ListView
-from rest_framework.views import APIView
 from stock_portfolio.settings.private_settings import CLOUD_API_KEY
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from operator import attrgetter
+from django.core.paginator import Paginator
 import requests
 import numpy as np
 
@@ -273,12 +270,14 @@ def leaderboard(request):
       except:
         users_list.append({'investor': u, 'value': 0})
 
-    #dict(sorted(users_list.value(), key=lambda value: value[1]))
-
-    def myFunct(e):
+    def myFun(e):
       return e['value']
-    users_list.sort(key=myFunct, reverse=True)
-    print(users_list)
-    return render(request, 'leaderboard.html', {'users': users_list})
+    users_list.sort(key=myFun, reverse=True)
 
-  return render(request, 'leaderboard.html')
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(users_list, 5)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'leaderboard.html', {'users_list': users_list, 'page_obj': page_obj})
+
+  return render(request, 'leaderboard.html', {'page_obj': page_obj})
