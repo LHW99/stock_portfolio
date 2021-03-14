@@ -4,7 +4,9 @@
 <h3>{{user}}'s Portfolio</h3>
 {% if user.portfolio %}
   {% if user.portfolio.stock_set.all %}
-    <table style='float:left;'>
+  <table style=''>
+  <tr>
+    <table style='display:inline-block; margin: auto; justify-content:center'>
       <tr>
         <td>Company</td>
         <td>Ticker</td>
@@ -22,7 +24,7 @@
         </tr>
       {% endfor %}
     </table>
-    <table>
+    <table style='display:inline-block;'>
       <tr>
         <td>Current Value</td>
       </tr>
@@ -34,11 +36,13 @@
       </tr>
       {% endfor %}
     </table>
+  </tr>
   {% else %}
-    <p>You don't have any stocks!</p>
+    <tr>You don't have any stocks!</tr>
   {% endif %}
-  <p>Available Funds: ${{ user.portfolio.portfolio_available_funds|floatformat:2 }}</p>
-  <p>Portfolio Value: ${{ portfolio_value|floatformat:2 }}</p>
+  <br><tr>Available Funds: ${{ user.portfolio.portfolio_available_funds|floatformat:2 }}</tr><br>
+  <tr>Portfolio Value: ${{ portfolio_value|floatformat:2 }}</tr>
+  </table>
 {% else %}
   <p>You don't have a portfolio!</p>
   <form method='POST' action=''>

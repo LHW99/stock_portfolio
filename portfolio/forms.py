@@ -12,11 +12,13 @@ class StockForm(ModelForm):
     labels = {
       'shares': 'Number of shares to buy'
     }
-    #widgets = {
-    #  'ticker': forms.HiddenInput(),
-    #  'company': forms.HiddenInput(),
-    #  'price': forms.HiddenInput(),
-    #}
+    widgets = {
+      'ticker': forms.HiddenInput(),
+      'company': forms.HiddenInput(),
+      'price': forms.HiddenInput(),
+      'portfolio': forms.HiddenInput(),
+      'stock_cost': forms.HiddenInput(),
+    }
 
 class StockSellForm(ModelForm):
   class Meta:
@@ -25,11 +27,13 @@ class StockSellForm(ModelForm):
     labels = {
       'shares': 'Number of shares to sell'
     }
-    #widgets = {
-    #  'ticker': forms.HiddenInput(),
-    #  'company': forms.HiddenInput(),
-    #  'price': forms.HiddenInput(),
-    #}
+    widgets = {
+      'ticker': forms.HiddenInput(),
+      'company': forms.HiddenInput(),
+      'price': forms.HiddenInput(),
+      'portfolio': forms.HiddenInput(),
+      'stock_cost': forms.HiddenInput(),
+    }
 
 class PortfolioForm(ModelForm):
   class Meta:
