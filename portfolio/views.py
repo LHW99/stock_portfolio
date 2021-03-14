@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView
 from rest_framework.views import APIView
 from stock_portfolio.settings.private_settings import CLOUD_API_KEY
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 import requests
 import numpy as np
 
@@ -109,7 +110,7 @@ def sell_stocks(request, symbol):
     response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={symbol}&types=quote&token={CLOUD_API_KEY}')
     data = response.json()
     company = data[symbol]['quote']['companyName']
-    price = data[symbol]['quote']['iexRealtimePrice']
+    price = data[symbol]['quote']['iexClose']
     investor = request.user
     try:
       current_shares = Stock.objects.get(ticker=symbol, portfolio=investor.portfolio.id)
@@ -185,7 +186,6 @@ def sell_stocks(request, symbol):
   return render(request, 'sell_stocks.html')
 
 def index(request):
-
   return render(request, 'index.html')
 
 def portfolio(request):
@@ -218,7 +218,7 @@ def portfolio(request):
       response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={batch_symbols}&types=quote&token={CLOUD_API_KEY}')
       data = response.json()
       for tick in data:
-        current_share_prices.append(float(data[tick]['quote']['iexRealtimePrice']))
+        current_share_prices.append(float(data[tick]['quote']['iexClose']))
       current_values = np.multiply(current_share_prices,batch_shares)
       portfolio_value = sum(current_values) + user.portfolio.portfolio_available_funds
     
@@ -243,3 +243,37 @@ def buy_error(request):
 
 def sell_error(request):
   return render(request, 'sell_error.html')
+
+def leaderboard(request):
+  if request.method=='GET':
+    user = get_user_model()
+    users = user.objects.all()
+    users_list = []
+    for u in users:
+      try:
+        stock_list = []
+        user_stock_list = u.portfolio.stock_set.all()
+        user_value = 0
+        if user_stock_list:
+          for stock in user_stock_list:
+            stock_list.append(stock.ticker)
+      
+          response = requests.get(f'https://sandbox.iexapis.com/stable/stock/market/batch?symbols={stock_list}&types=quote&token={CLOUD_API_KEY}')
+          data = response.json()
+          
+          for stock in user_stock_list:
+            value = float(stock.shares)*float(data[stock.ticker]['quote']['iexClose'])
+            user_value+=float(value)   
+
+          user_value+=u.portfolio.portfolio_available_funds
+          users_list.append({'investor': u.portfolio.investor, 'value': user_value})
+        else:
+          users_list.append({'investor': u.portfolio.investor, 'value': u.portfolio.portfolio_available_funds})
+      except:
+        users_list.append({'investor': u, 'value': 0})
+
+    #dict(sorted(users_list.value(), key=lambda value: value[1]))
+
+    return render(request, 'leaderboard.html', {'users':users_list})
+
+  return render(request, 'leaderboard.html')

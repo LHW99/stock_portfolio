@@ -1,0 +1,8 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<h2>Leaderboards</h2>
+{% for user in users %}
+  <p>{{ forloop.counter }}. {{user.investor}}: ${{user.value|floatformat:2}}</p>
+{% endfor %}
+{% endblock %}
