@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from stock_portfolio.settings.private_settings import CLOUD_API_KEY
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from operator import attrgetter
 import requests
 import numpy as np
 
@@ -274,6 +275,10 @@ def leaderboard(request):
 
     #dict(sorted(users_list.value(), key=lambda value: value[1]))
 
-    return render(request, 'leaderboard.html', {'users':users_list})
+    def myFunct(e):
+      return e['value']
+    users_list.sort(key=myFunct, reverse=True)
+    print(users_list)
+    return render(request, 'leaderboard.html', {'users': users_list})
 
   return render(request, 'leaderboard.html')
