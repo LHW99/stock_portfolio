@@ -1,16 +1,17 @@
 import os
 from pathlib import Path
-from stock_portfolio.settings.private_settings import SECRET_KEY
+#from stock_portfolio.settings.private_settings import SECRET_KEY
+from django.core.management.utils import get_random_secret_key
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-]
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 # Application definition
 
