@@ -1,7 +1,7 @@
 {% extends 'base.html'%}
 
 {% block content %}
-<h2>Leaderboards</h2>
+<h2>Leaderboard</h2>
 {% for user in page_obj %}
   <p>{{ forloop.counter0|add:page_obj.start_index }}. {{user.investor}}: ${{user.value|floatformat:2}}</p>
 {% endfor %}

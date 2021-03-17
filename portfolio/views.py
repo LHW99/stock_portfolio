@@ -1,7 +1,10 @@
 from portfolio.models import Stock, Portfolio
 from portfolio.forms import StockForm, PortfolioForm, StockSellForm, CustomUserCreation
 from django.shortcuts import render, redirect
-from stock_portfolio.settings.private_settings import CLOUD_API_KEY
+try:
+  from stock_portfolio.settings.private_settings import CLOUD_API_KEY
+except: 
+  from stock_portfolio.settings.api import CLOUD_API_KEY
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, login, authenticate
 from django.core.paginator import Paginator
