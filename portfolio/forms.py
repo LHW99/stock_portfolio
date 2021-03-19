@@ -45,16 +45,16 @@ class PortfolioForm(ModelForm):
       'portfolio_available_funds': forms.HiddenInput(),
     }
 
-class CustomUserCreation(UserCreationForm):
-  class Meta:
-    model = User
-    fields = (
-      'username', 
-      'password1', 
-      'password2', 
-    )
+#class CustomUserCreation(UserCreationForm):
+  #class Meta:
+    #model = User
+    #fields = '__all__'#(
+    #  'username', 
+    #  'password1', 
+    #  'password2', 
+    #)
   
-  def __init__(self, *args, **kwargs):
-    super(CustomUserCreation, self).__init__(*args, **kwargs)
-    for field_name in ('username', 'password1', 'password2'):
-      self.fields[field_name].help_text = ''
+  #def __init__(self, *args, **kwargs):
+  #  super(CustomUserCreation, self).__init__(*args, **kwargs)
+  #  for field_name in ('username', 'password1', 'password2'):
+  #    self.fields[field_name].help_text = ''

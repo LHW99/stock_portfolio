@@ -1,6 +1,7 @@
 from portfolio.models import Stock, Portfolio
-from portfolio.forms import StockForm, PortfolioForm, StockSellForm, CustomUserCreation
+from portfolio.forms import StockForm, PortfolioForm, StockSellForm #CustomUserCreation
 from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
 try:
   from stock_portfolio.settings.private_settings import CLOUD_API_KEY
 except: 
@@ -294,7 +295,7 @@ def leaderboard(request):
 
 def signup(request):
   if request.method=='POST':
-    form = CustomUserCreation(request.POST)
+    form = UserCreationForm(request.POST)
     if form.is_valid():
       form.save()
       username = request.POST.get('username')
@@ -303,6 +304,6 @@ def signup(request):
       login(request, user)
       return redirect('index')
   else:
-    form = CustomUserCreation()
+    form = UserCreationForm()
 
   return render(request, 'signup.html', {'form':form})
