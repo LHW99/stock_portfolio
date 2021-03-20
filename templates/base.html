@@ -12,29 +12,30 @@
   <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
 </head>
 <body>
-  <div>
-    <div class=''>
-      <h1><strong><u>Portfolio</u></strong></h1>
-
-      <form method='GET' action='{% url 'search' %}'>
+  <nav class='navbar navbar-light bg-light'>
+    <div class='container-fluid'>
+      <h1 class='navbar-brand'><strong><u>Portfolio</u></strong></h1>
+      <form class='d-flex' method='GET' action='{% url 'search' %}'>
         {% csrf_token %}
-        <input type='search' name='ticker_search' onfocus="this.value=''" value=''>
-        <button type='submit'>Search</button>
+        <input class='form-control me-2' type='search' name='ticker_search' onfocus="this.value=''" value=''>
+        <button class='btn btn-outline-success' type='submit'>Search</button>
       </form>
       <div class='front-header'>
       {% if user.is_authenticated %}
         <p>User: {{ user.get_username }}</p>
         <a href='{% url 'portfolio_detail' %}'>Your Portfolio</a>
+        <a href='{% url 'leaderboard'%}'>Leaderboard</a>
         <a href='{% url 'logout' %}'>Logout</a>
       {% else %}  
+        <a href='{% url 'leaderboard'%}'>Leaderboard</a>
         <a href='{% url 'login'%}'>Login</a>
       {% endif %}
-        <a href='{% url 'leaderboard'%}'>Leaderboard</a>
       </div>
     </div>
+  </nav>
+
     <div style='text-align:center;' class='container container-table'>
     {% block content %}{% endblock %}
     </div>
-  </div>
 </body>
 </html>
