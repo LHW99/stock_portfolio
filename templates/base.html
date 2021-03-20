@@ -11,30 +11,30 @@
   <!--{% load static %}-->
   <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
 </head>
-<body>
+<body class='bg-dark'>
   <nav class='navbar navbar-light bg-light'>
     <div class='container-fluid'>
-      <h1 class='navbar-brand'><strong><u>Portfolio</u></strong></h1>
+      <h1 class='navbar-brand'><strong><u>Portfolio Simulator</u></strong></h1>
       <form class='d-flex' method='GET' action='{% url 'search' %}'>
         {% csrf_token %}
         <input class='form-control me-2' type='search' name='ticker_search' onfocus="this.value=''" value=''>
-        <button class='btn btn-outline-success' type='submit'>Search</button>
+        <button class='btn btn-outline-dark' type='submit'>Search</button>
       </form>
       <div class='front-header'>
       {% if user.is_authenticated %}
         <p>User: {{ user.get_username }}</p>
-        <a href='{% url 'portfolio_detail' %}'>Your Portfolio</a>
-        <a href='{% url 'leaderboard'%}'>Leaderboard</a>
-        <a href='{% url 'logout' %}'>Logout</a>
+        <a class='btn btn-outline-dark' href='{% url 'portfolio_detail' %}'>Your Portfolio</a>
+        <a class='btn btn-outline-dark' href='{% url 'leaderboard'%}'>Leaderboard</a>
+        <a class='btn btn-outline-dark' href='{% url 'logout' %}'>Logout</a>
       {% else %}  
-        <a href='{% url 'leaderboard'%}'>Leaderboard</a>
-        <a href='{% url 'login'%}'>Login</a>
+        <a class='btn btn-outline-dark' href='{% url 'leaderboard'%}'>Leaderboard</a>
+        <a class='btn btn-outline-dark' href='{% url 'login'%}'>Login</a>
       {% endif %}
       </div>
     </div>
   </nav>
 
-    <div style='text-align:center;' class='container container-table'>
+    <div style='text-align:center; padding-top:20vh; padding-bottom: 20vh; margin-top: 6vh' class='container container-table bg-light rounded'>
     {% block content %}{% endblock %}
     </div>
 </body>
