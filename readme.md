@@ -40,4 +40,3 @@ If in production, you should assign the API key and secret key to environmental 
 
 ![ss1](/screenshots/1.png?raw=true)
 ![ss2](/screenshots/2.png?raw=true)
-![ss3](/screenshots/3.png?raw=true)
