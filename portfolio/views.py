@@ -23,7 +23,7 @@ def api_call(request):
       
       return render(request, 'search.html',{
         'companyName': data[symbol]['quote']['companyName'],
-        'iexRealtimePrice': data[symbol]['quote']['iexClose'],
+        'iexRealtimePrice': f"${data[symbol]['quote']['iexClose']}",
         'symbol': symbol,
       })
 

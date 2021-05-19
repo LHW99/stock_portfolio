@@ -3,11 +3,12 @@
 {% block title %} <title>PORTFOLIO</title> {% endblock %}
 
 {% block content %}
-  <p>
-    {{ symbol }} {{ companyName }} {{ iexRealtimePrice }} 
+  <h2>{{ companyName }} {% if symbol %} - {% endif %} {{ symbol }}</h2>
+  <h4>{{ iexRealtimePrice }}</h4>
+  <div>
     {% if symbol %}
-    <a href='{% url 'buy' symbol %}'>BUY</a>
-    <a href='{% url 'sell' symbol %}'>SELL</a>
+    <a class="btn btn-outline-dark" href='{% url 'buy' symbol %}'>BUY</a>
+    <a class="btn btn-outline-dark" href='{% url 'sell' symbol %}'>SELL</a>
     {% endif %}
-  </p>
+  </div>
 {% endblock %}

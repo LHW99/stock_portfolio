@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>{{user}}'s Portfolio</h3>
+<h2>{{user}}'s Portfolio</h2>
 {% if user.portfolio %}
   {% if user.portfolio.stock_set.all %}
   <table style=''>

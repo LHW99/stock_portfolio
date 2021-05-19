@@ -2,13 +2,13 @@
 
 {% block content %}
   {% if user.is_authenticated %}
-    <h3>Buy</h3>
-    <p>Ticker: {{ symbol }}</p>
-    <p>Price: {{ price }}</p>
+    <h2>Buy</h2>
+    <h2>Ticker: {{ symbol }}</h2>
+    <h4>${{ price }}</h4>
     <form method='POST' action=''>
       {% csrf_token %}
       {{ form }}
-      <button type='submit'>Buy</button>
+      <button class="btn btn-outline-dark" type='submit'>Buy</button>
     </form>
   {% else %}
     <p>Please login to continue!</p>

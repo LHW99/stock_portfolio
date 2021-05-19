@@ -1,15 +1,15 @@
 {% extends 'base.html'%}
 
 {% block content %}
-  <h3>Sell</h3>
+  <h2>Sell</h2>
   {% if current_shares > 0 %}
-    <p>Ticker: {{ symbol }}</p>
-    <p>Price: {{ price }}</p>
+    <h2>Ticker: {{ symbol }}</h2>
+    <h4>${{ price }}</h4>
     <p>Your Shares: {{ current_shares }}</p>
     <form method='POST' action=''>
       {% csrf_token %}
       {{ form }}
-      <button type='submit'>Sell</button>
+      <button class="btn btn-outline-dark" type='submit'>Sell</button>
     </form>
   {% else %}
     <p>You have no shares of this stock to sell!</p>
