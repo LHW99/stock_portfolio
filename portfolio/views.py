@@ -46,18 +46,21 @@ def buy_stocks(request, symbol):
     price = data[symbol]['quote']['iexClose']
     investor = request.user
     # instantiate form prefilled
-    form = StockForm(initial={
-      'ticker': symbol, 
-      'company': company, 
-      'price': price,
-      'portfolio': investor.portfolio,
-      'stock_cost': 0,
+    try:
+      form = StockForm(initial={
+        'ticker': symbol, 
+        'company': company, 
+        'price': price,
+        'portfolio': investor.portfolio,
+        'stock_cost': 0,
+        })
+      return render(request, 'buy_stocks.html',{
+        'form': form,
+        'symbol': symbol,
+        'price': price
       })
-    return render(request, 'buy_stocks.html',{
-      'form': form,
-      'symbol': symbol,
-      'price': price
-    })
+    except:
+      return render(request, 'buy_error.html')
 
   if request.method == 'POST':
     form = StockForm(request.POST)
@@ -122,22 +125,25 @@ def sell_stocks(request, symbol):
       curr = current_shares.shares
     except:
       curr = 0
-    #selling form
-    form = StockSellForm(initial={
-      'ticker': symbol, 
-      'company': company, 
-      'price': price,
-      'portfolio': investor.portfolio,
-      'stock_cost': 0,
-      })
 
-    return render(request, 'sell_stocks.html',{
-      'company': company,
-      'price': price,
-      'symbol': symbol,
-      'current_shares': curr,
-      'form': form,
-    })
+    #selling form
+    try:
+      form = StockSellForm(initial={
+        'ticker': symbol, 
+        'company': company, 
+        'price': price,
+        'portfolio': investor.portfolio,
+        'stock_cost': 0,
+        })
+      return render(request, 'sell_stocks.html',{
+        'company': company,
+        'price': price,
+        'symbol': symbol,
+        'current_shares': curr,
+        'form': form,
+      })
+    except:
+      return render(request, 'sell_error.html')
 
   else: 
     form = StockSellForm(request.POST)

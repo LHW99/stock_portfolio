@@ -1,12 +1,16 @@
 {% extends 'base.html'%}
 
 {% block content %}
-  <h3>Buy</h3>
-  <p>Ticker: {{ symbol }}</p>
-  <p>Price: {{ price }}</p>
-  <form method='POST' action=''>
-    {% csrf_token %}
-    {{ form }}
-    <button type='submit'>Buy</button>
-  </form>
+  {% if user.is_authenticated %}
+    <h3>Buy</h3>
+    <p>Ticker: {{ symbol }}</p>
+    <p>Price: {{ price }}</p>
+    <form method='POST' action=''>
+      {% csrf_token %}
+      {{ form }}
+      <button type='submit'>Buy</button>
+    </form>
+  {% else %}
+    <p>Please login to continue!</p>
+  {% endif %}
 {% endblock %}

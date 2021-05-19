@@ -3,7 +3,6 @@
 {% block title %} <title>PORTFOLIO</title> {% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
   <p>
     {{ symbol }} {{ companyName }} {{ iexRealtimePrice }} 
     {% if symbol %}
@@ -11,7 +10,4 @@
     <a href='{% url 'sell' symbol %}'>SELL</a>
     {% endif %}
   </p>
-{% else %}
-  <p>Please log in to continue!</p>
-{% endif %}
 {% endblock %}
